@@ -1,6 +1,6 @@
-# ─────────────────────────────
+
 # STAGE 1: dependencies
-# ─────────────────────────────
+
 FROM node:20-alpine AS deps
 
 WORKDIR /app
@@ -8,23 +8,25 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# ─────────────────────────────
+
 # STAGE 2: test
-# ─────────────────────────────
+
 FROM deps AS tester
 
 COPY . .
 RUN npm test --if-present
 
-# ─────────────────────────────
+
 # STAGE 3: production
-# ─────────────────────────────
+
 FROM node:20-alpine AS production
 
 LABEL maintainer="yoderickmejia@gmail.com" \
       description="PRUEBA APAP"
 
 RUN apk add --no-cache dumb-init wget
+
+RUN mkdir -p /app && chown node:node /app
 
 WORKDIR /app
 

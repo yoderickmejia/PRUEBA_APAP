@@ -6,7 +6,7 @@ const app = require('../src/app');
 // GET /
 // ─────────────────────────────────────────
 describe('GET /', () => {
-W
+
   it('retorna status 200', async () => {
     const res = await request(app).get('/');
     expect(res.status).toBe(200);
