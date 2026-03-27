@@ -1,0 +1,7 @@
+node_modules/
+coverage/
+.env
+*.log
+dist/
+.nyc_output/
+junit.xml
