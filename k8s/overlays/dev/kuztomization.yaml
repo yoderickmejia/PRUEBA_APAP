@@ -10,7 +10,7 @@ commonLabels:
   app.kubernetes.io/environment: dev
 
 images:
-  - name: yoderickmejia/prueba-tecnica-apap
+  - name: ymonterom/prueba-tecnica-apap
     newTag: latest
 
 patches:
