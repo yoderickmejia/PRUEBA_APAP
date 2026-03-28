@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prueba-tecnica-apap
+  labels:
+    app.kubernetes.io/name: prueba-tecnica-apap
+    app.kubernetes.io/component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: prueba-tecnica-apap
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http

@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: prueba-tecnica-apap-base
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - hpa.yaml
+  - cluster-issuer.yaml
+  - certificate.yaml
+  - ingress.yaml
+
+commonLabels:
+  app.kubernetes.io/name: prueba-tecnica-apap
+  app.kubernetes.io/part-of: prueba-tecnica-apap
+  app.kubernetes.io/managed-by: kustomize
