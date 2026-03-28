@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - main
-      - master
+      - qa
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/prueba-tecnica-apap
