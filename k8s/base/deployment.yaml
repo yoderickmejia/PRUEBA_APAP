@@ -26,7 +26,7 @@ spec:
 
       containers:
         - name: prueba-tecnica-apap
-          image: yoderickmejia/prueba-tecnica-apap:latest
+          image: ymonterom/prueba-tecnica-apap:latest
           imagePullPolicy: Always
           ports:
             - name: http
