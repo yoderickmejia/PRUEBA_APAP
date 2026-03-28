@@ -7,14 +7,17 @@ on:
   pull_request:
     branches:
       - main
-      - qa
+      - master
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/prueba-tecnica-apap
 
 jobs:
+  # ─────────────────────────────────────────────
+  # JOB 1: Instalar dependencias, lint y tests
+  # ─────────────────────────────────────────────
   test:
-    name:  Install, Lint & Test
+    name: 🧪 Install, Lint & Test
     runs-on: ubuntu-latest
 
     steps:
@@ -30,14 +33,14 @@ jobs:
       - name: Instalar dependencias
         run: npm ci --frozen-lockfile
 
-
-      - name: Lint 
+      # BONUS: Linting antes de los tests
+      - name: Lint (ESLint)
         run: npm run lint --if-present
 
       - name: Ejecutar pruebas unitarias con cobertura
         run: npm test -- --coverage --coverageReporters=lcov --coverageReporters=text
 
-
+      # Publicar resultados de cobertura como artefacto
       - name: Publicar reporte de cobertura
         uses: actions/upload-artifact@v4
         if: always()
@@ -46,13 +49,16 @@ jobs:
           path: coverage/
           retention-days: 7
 
+  # ─────────────────────────────────────────────
+  # JOB 2: Análisis SAST con SonarCloud
+  # ─────────────────────────────────────────────
   sonar:
-    name:  SonarCloud
+    name: 🔍 SAST — SonarCloud
     runs-on: ubuntu-latest
     needs: test
 
     steps:
-      - name: Checkout código 
+      - name: Checkout código (con historial completo para Sonar)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -66,7 +72,7 @@ jobs:
       - name: Instalar dependencias
         run: npm ci --frozen-lockfile
 
-     
+      # Regenerar cobertura para que Sonar la lea
       - name: Generar reporte de cobertura (lcov)
         run: npm test -- --coverage --coverageReporters=lcov
 
@@ -75,11 +81,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-       
+        # La configuración del proyecto se lee desde sonar-project.properties
 
-
+  # ─────────────────────────────────────────────
+  # JOB 3: Build Docker + Trivy + Push
+  # ─────────────────────────────────────────────
   build-and-push:
-    name:  Docker Build, Scan & Push
+    name: 🐳 Docker Build, Scan & Push
     runs-on: ubuntu-latest
     needs: sonar
 
@@ -90,7 +98,7 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
-
+      # Genera tags: latest + SHA corto + fecha
       - name: Generar metadata de la imagen
         id: meta
         uses: docker/metadata-action@v5
@@ -107,7 +115,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-
+      # Buildx para cache eficiente
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -115,33 +123,34 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: false         
-          load: true          
+          push: false          # Primero solo build, luego Trivy escanea
+          load: true           # Carga en el daemon local para el escaneo
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-
+      # ── Escaneo de seguridad con Trivy ──
       - name: Escaneo de vulnerabilidades con Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.IMAGE_NAME }}:latest
           format: "table"
-          exit-code: "1"                      
+          exit-code: "1"                        # Falla el pipeline si hay críticos
           ignore-unfixed: true
           vuln-type: "os,library"
-          severity: "CRITICAL,HIGH"
+          severity: "CRITICAL"
           output: trivy-report.txt
 
       - name: Publicar reporte de Trivy como artefacto
         uses: actions/upload-artifact@v4
-        if: always()                           
+        if: always()                             # Publicar aunque Trivy haya fallado
         with:
           name: trivy-security-report
           path: trivy-report.txt
           retention-days: 7
 
+      # Solo llega aquí si Trivy no encontró CRITICALs
       - name: Push de la imagen al registry
         uses: docker/build-push-action@v5
         with:
@@ -152,8 +161,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # ─────────────────────────────────────────────
+  # JOB 4: CD — Actualizar tag en repositorio GitOps
+  # ─────────────────────────────────────────────
   update-gitops:
-    name:   Actualizar GitOps
+    name: 🚀 CD — Actualizar GitOps
     runs-on: ubuntu-latest
     needs: build-and-push
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
@@ -162,7 +174,9 @@ jobs:
       - name: Checkout repositorio GitOps
         uses: actions/checkout@v4
         with:
-          repository: ${{ secrets.GITOPS_REPO }}   
+          # Si GitOps está en el mismo repo, omite 'repository' y 'token'
+          # Si es un repo separado, usa un PAT con permisos de escritura
+          repository: ${{ secrets.GITOPS_REPO }}   # ej: tu-usuario/prueba-tecnica-gitops
           token: ${{ secrets.GITOPS_PAT }}
           path: gitops
 
