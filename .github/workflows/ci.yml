@@ -15,7 +15,7 @@ env:
 jobs:
 
   test:
-    name: 🧪 Install, Lint & Test
+    name:  Install, Lint & Test
     runs-on: ubuntu-latest
 
     steps:
@@ -41,7 +41,7 @@ jobs:
       - name: Publicar reporte de cobertura
         uses: actions/upload-artifact@v4
         if: always()
-        with:y
+        with:
           name: coverage-report
           path: coverage/
           retention-days: 7
@@ -152,7 +152,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   update-gitops:
-    name: 🚀 CD — Actualizar GitOps
+    name:  Actualizar GitOps
     runs-on: ubuntu-latest
     needs: build-and-push
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
