@@ -187,16 +187,12 @@ jobs:
         with:
           token: ${{ secrets.GITOPS_PAT }}
 
-      - name: Instalar kustomize
-        uses: imranismail/setup-kustomize@v2
-
       - name: Actualizar image tag en overlay ${{ steps.env.outputs.overlay }}
         env:
           NEW_TAG: ${{ needs.build-and-push.outputs.image_tag }}
           OVERLAY: ${{ steps.env.outputs.overlay }}
         run: |
-          cd k8s/overlays/${OVERLAY}
-          kustomize edit set image ymonterom/prueba-tecnica-apap=ymonterom/prueba-tecnica-apap:${NEW_TAG}
+          sed -i "s/newTag: .*/newTag: ${NEW_TAG}/" k8s/overlays/${OVERLAY}/kustomization.yaml
 
       - name: Commit y push del nuevo tag
         env:
