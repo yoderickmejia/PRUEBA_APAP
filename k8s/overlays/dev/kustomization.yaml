@@ -13,7 +13,7 @@ labels:
 images:
 - name: ymonterom/prueba-tecnica-apap
   newName: ymonterom/prueba-tecnica-apap
-  newTag: dev-20260329-455cc86
+  newTag: dev-20260329-699ac5e
 
 patches:
 - path: patch-replicas.yml

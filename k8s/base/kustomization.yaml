@@ -12,7 +12,9 @@ resources:
   - external-secret.yaml
   - service-monitor.yaml
 
-commonLabels:
-  app.kubernetes.io/name: prueba-tecnica-apap
-  app.kubernetes.io/part-of: prueba-tecnica-apap
-  app.kubernetes.io/managed-by: kustomize
+labels:
+- pairs:
+    app.kubernetes.io/name: prueba-tecnica-apap
+    app.kubernetes.io/part-of: prueba-tecnica-apap
+    app.kubernetes.io/managed-by: kustomize
+  includeSelectors: false

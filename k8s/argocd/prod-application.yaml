@@ -20,8 +20,6 @@ spec:
   syncPolicy:
     automated:
       prune: true
-      # selfHeal activo: si el estado del clúster diverge del git, ArgoCD
-      # resincroniza automáticamente (rollback automático ante cambios manuales)
       selfHeal: true
       allowEmpty: false
     syncOptions:

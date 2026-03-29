@@ -9,6 +9,7 @@ resources:
 labels:
 - pairs:
     app.kubernetes.io/environment: prod
+  includeSelectors: false
 
 images:
 - name: ymonterom/prueba-tecnica-apap
