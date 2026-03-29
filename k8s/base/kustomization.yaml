@@ -8,8 +8,6 @@ resources:
   - certificate.yaml
   - ingress.yaml
   - network-policy.yaml
-  - secret-store.yaml
-  - external-secret.yaml
   - service-monitor.yaml
 
 labels:
