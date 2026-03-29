@@ -8,7 +8,6 @@ spec:
   issuerRef:
     name: selfsigned-issuer
     kind: ClusterIssuer
-  commonName: "20-245-96-137.sslip.io"
+  commonName: "app.example.com"
   dnsNames:
-    - "20-245-96-137.sslip.io"
-    - "dev.20-245-96-137.sslip.io"
+    - "app.example.com"

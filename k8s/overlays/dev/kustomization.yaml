@@ -17,5 +17,13 @@ patches:
   target:
     kind: Deployment
     name: prueba-tecnica-apap
+- path: patch-ingress.yaml
+  target:
+    kind: Ingress
+    name: prueba-tecnica-apap
+- path: patch-certificate.yaml
+  target:
+    kind: Certificate
+    name: prueba-tecnica-apap-tls
 resources:
 - ../../base

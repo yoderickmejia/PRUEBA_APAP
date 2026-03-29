@@ -1,0 +1,6 @@
+- op: replace
+  path: /spec/rules/0/host
+  value: "prod.20-245-96-137.sslip.io"
+- op: replace
+  path: /spec/tls/0/hosts/0
+  value: "prod.20-245-96-137.sslip.io"

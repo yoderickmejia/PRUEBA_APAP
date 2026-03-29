@@ -1,0 +1,7 @@
+- op: replace
+  path: /spec/commonName
+  value: "dev.20-245-96-137.sslip.io"
+- op: replace
+  path: /spec/dnsNames
+  value:
+    - "dev.20-245-96-137.sslip.io"
