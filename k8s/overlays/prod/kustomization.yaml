@@ -9,12 +9,11 @@ resources:
 labels:
 - pairs:
     app.kubernetes.io/environment: prod
-  includeSelectors: false
 
 images:
 - name: ymonterom/prueba-tecnica-apap
   newName: ymonterom/prueba-tecnica-apap
-  newTag: 20260329-2ba76af
+  newTag: 20260329-ed2dbad
 
 patches:
 - path: patch-replicas.yml
