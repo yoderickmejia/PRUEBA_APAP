@@ -3,18 +3,19 @@ kind: Kustomization
 
 namespace: dev
 
-bases:
-  - ../../base
 
 commonLabels:
   app.kubernetes.io/environment: dev
 
 images:
-  - name: ymonterom/prueba-tecnica-apap
-    newTag: latest
+- name: ymonterom/prueba-tecnica-apap
+  newName: ymonterom/prueba-tecnica-apap
+  newTag: latest
 
 patches:
-  - path: patch-replicas.yaml
-    target:
-      kind: Deployment
-      name: prueba-tecnica-apap
+- path: patch-replicas.yaml
+  target:
+    kind: Deployment
+    name: prueba-tecnica-apap
+resources:
+- ../../base
