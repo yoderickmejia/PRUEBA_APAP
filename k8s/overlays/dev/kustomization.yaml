@@ -13,7 +13,7 @@ images:
   newTag: latest
 
 patches:
-- path: patch-replicas.yaml
+- path: patch-replicas.yml
   target:
     kind: Deployment
     name: prueba-tecnica-apap
