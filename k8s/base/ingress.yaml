@@ -13,10 +13,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - "dev.20-245-96-137.sslip.io"
+        - "app.example.com"
       secretName: prueba-tecnica-apap-tls
   rules:
-    - host: "dev.20-245-96-137.sslip.io"
+    - host: "app.example.com"
       http:
         paths:
           - path: /
