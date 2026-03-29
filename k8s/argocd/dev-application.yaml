@@ -19,9 +19,7 @@ spec:
     namespace: dev
   syncPolicy:
     automated:
-      # Elimina recursos que ya no existen en git
       prune: true
-      # Revierte cambios manuales en el clúster (rollback automático)
       selfHeal: true
       allowEmpty: false
     syncOptions:
@@ -34,5 +32,4 @@ spec:
         duration: 5s
         factor: 2
         maxDuration: 3m
-  # Cuántas revisiones anteriores conservar para rollback manual
   revisionHistoryLimit: 5
