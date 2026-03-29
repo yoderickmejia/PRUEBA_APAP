@@ -1,0 +1,70 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prueba-tecnica-apap-deny-all
+  labels:
+    app.kubernetes.io/name: prueba-tecnica-apap
+    app.kubernetes.io/component: network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prueba-tecnica-apap
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prueba-tecnica-apap-allow-ingress
+  labels:
+    app.kubernetes.io/name: prueba-tecnica-apap
+    app.kubernetes.io/component: network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prueba-tecnica-apap
+  policyTypes:
+    - Ingress
+  ingress:
+    # Permite tráfico desde el ingress controller (nginx)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 3000
+    # Permite scraping de Prometheus
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prueba-tecnica-apap-allow-egress
+  labels:
+    app.kubernetes.io/name: prueba-tecnica-apap
+    app.kubernetes.io/component: network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prueba-tecnica-apap
+  policyTypes:
+    - Egress
+  egress:
+    # Permite resolución DNS
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Permite HTTPS hacia el exterior (APIs externas)
+    - ports:
+        - protocol: TCP
+          port: 443

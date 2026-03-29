@@ -1,0 +1,71 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prueba-tecnica-apap
+  labels:
+    app.kubernetes.io/name: prueba-tecnica-apap
+    app.kubernetes.io/component: monitoring
+    # Esta label permite que el Prometheus Operator descubra este ServiceMonitor
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prueba-tecnica-apap
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prueba-tecnica-apap
+  labels:
+    app.kubernetes.io/name: prueba-tecnica-apap
+    app.kubernetes.io/component: monitoring
+    release: prometheus
+spec:
+  groups:
+    - name: prueba-tecnica-apap.rules
+      interval: 30s
+      rules:
+        - alert: AppDown
+          expr: up{job="prueba-tecnica-apap"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Aplicación caída"
+            description: "El pod {{ $labels.pod }} lleva más de 1 minuto sin responder."
+
+        - alert: HighCPUUsage
+          expr: |
+            rate(container_cpu_usage_seconds_total{container="prueba-tecnica-apap"}[5m]) > 0.8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "CPU alta en {{ $labels.pod }}"
+            description: "Uso de CPU supera el 80% por más de 5 minutos."
+
+        - alert: HighMemoryUsage
+          expr: |
+            container_memory_working_set_bytes{container="prueba-tecnica-apap"}
+            / container_spec_memory_limit_bytes{container="prueba-tecnica-apap"} > 0.85
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Memoria alta en {{ $labels.pod }}"
+            description: "Uso de memoria supera el 85% del límite por más de 5 minutos."
+
+        - alert: PodCrashLooping
+          expr: |
+            rate(kube_pod_container_status_restarts_total{container="prueba-tecnica-apap"}[15m]) > 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Pod en CrashLoop"
+            description: "El pod {{ $labels.pod }} está reiniciando repetidamente."

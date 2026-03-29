@@ -7,6 +7,10 @@ resources:
   - hpa.yaml
   - certificate.yaml
   - ingress.yaml
+  - network-policy.yaml
+  - secret-store.yaml
+  - external-secret.yaml
+  - service-monitor.yaml
 
 commonLabels:
   app.kubernetes.io/name: prueba-tecnica-apap
