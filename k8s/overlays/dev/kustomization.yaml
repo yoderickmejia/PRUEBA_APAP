@@ -4,28 +4,27 @@ kind: Kustomization
 namespace: dev
 
 resources:
-  - ../../base
+- ../../base
 
 labels:
-  - pairs:
-      app.kubernetes.io/environment: dev
-    includeSelectors: false
+- pairs:
+    app.kubernetes.io/environment: dev
 
 images:
-  - name: ymonterom/prueba-tecnica-apap
-    newName: ymonterom/prueba-tecnica-apap
-    newTag: latest
+- name: ymonterom/prueba-tecnica-apap
+  newName: ymonterom/prueba-tecnica-apap
+  newTag: dev-20260329-4c4eabc
 
 patches:
-  - path: patch-replicas.yml
-    target:
-      kind: Deployment
-      name: prueba-tecnica-apap
-  - path: patch-ingress.yaml
-    target:
-      kind: Ingress
-      name: prueba-tecnica-apap
-  - path: patch-certificate.yaml
-    target:
-      kind: Certificate
-      name: prueba-tecnica-apap-tls
+- path: patch-replicas.yml
+  target:
+    kind: Deployment
+    name: prueba-tecnica-apap
+- path: patch-ingress.yaml
+  target:
+    kind: Ingress
+    name: prueba-tecnica-apap
+- path: patch-certificate.yaml
+  target:
+    kind: Certificate
+    name: prueba-tecnica-apap-tls
